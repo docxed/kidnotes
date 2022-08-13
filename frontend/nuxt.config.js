@@ -3,8 +3,8 @@ import colors from "vuetify/es5/util/colors"
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: "%s - kidnotes",
-    title: "kidnotes",
+    titleTemplate: "😇 บันทึกแต้มบุญ - %s",
+    title: "😇 บันทึกแต้มบุญ",
     htmlAttrs: {
       lang: "en",
     },
@@ -21,7 +21,7 @@ export default {
   css: ["~/assets/css/main.css"],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [{ src: "~/plugins/loader.js" }, { src: "~/plugins/rules.js" }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -37,6 +37,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     "@nuxtjs/axios",
     "@nuxtjs/google-fonts",
+    "@nuxtjs/apollo",
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -67,6 +68,23 @@ export default {
   googleFonts: {
     families: {
       Kanit: [400],
+    },
+  },
+
+  apollo: {
+    clientConfigs: {
+      default: "~/plugins/apollo-config.js",
+    },
+    authenticationType: "Bearer",
+    tokenName: "accessToken",
+    cookieAttributes: {
+      expires: 14,
+    },
+    defaultOptions: {
+      $query: {
+        loadingKey: "loading",
+        fetchPolicy: "no-cache",
+      },
     },
   },
 

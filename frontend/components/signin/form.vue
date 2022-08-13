@@ -61,7 +61,7 @@ export default {
     },
     submitForm() {
       if (this.$refs.signinForm.validate()) {
-        this.$emit("onSubmitsignin", this.signinData)
+        this.$emit("onSubmitSignin", this.signinData)
       }
     },
   },

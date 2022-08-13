@@ -25,7 +25,7 @@ const corsOptions = {
 }
 app.use(cors(corsOptions))
 app.get("/", (req, res) => {
-  res.send("Hello This is Kidnotes API")
+  res.status(200).send("Hello This is Kidnotes API")
 })
 
 const startApolloServer = async () => {
@@ -43,7 +43,7 @@ const startApolloServer = async () => {
     context: ({ req }) => {
       const { cookies, headers } = req
       let token = null
-      if (cookies?.accessToken) {
+      if (cookies?.cookies) {
         token = cookies.accessToken
       } else if (headers?.authorization?.split(" ")?.[0] === "Bearer") {
         token = headers.authorization.split(" ")[1]

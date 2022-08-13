@@ -2,20 +2,46 @@
   <v-app dark>
     <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app>
       <v-list>
-        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
+        <div v-for="(item, i) in items" :key="i">
+          <v-list-item
+            v-if="item.isAuthenticated === 'skip' || item.isAuthenticated === isAuthenticated"
+            :to="item.to"
+            router
+            exact
+          >
+            <v-list-item-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title" />
+            </v-list-item-content>
+          </v-list-item>
+        </div>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
       <v-spacer />
+      <!-- Me -->
+      <div v-if="isAuthenticated" class="mr-3">
+        <v-menu offset-y rounded="rounded">
+          <template v-slot:activator="{ on, attrs }">
+            <v-chip class="ma-2" pill v-bind="attrs" v-on="on">
+              {{ `😝 ${me.name}` }} <v-icon>mdi-menu-down</v-icon>
+            </v-chip>
+          </template>
+          <v-list>
+            <v-list-item @click="$router.push('/profile')">
+              <v-list-item-title>ข้อมูลส่วนตัว</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="onLogout()">
+              <v-list-item-title>ออกจากระบบ</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
+      <!-- Theme -->
       <div>
         <v-tooltip v-if="!$vuetify.theme.dark" bottom>
           <template v-slot:activator="{ on }">
@@ -36,9 +62,14 @@
       </div>
     </v-app-bar>
     <v-main>
-      <v-container fluid fill-height>
-        <Nuxt />
-      </v-container>
+      <Nuxt />
+      <message-snackbar
+        v-for="(data, index) in getMessage"
+        :key="`message-${data.title}`"
+        :data="data"
+        :index="index"
+      />
+      <layouts-loader />
     </v-main>
     <v-footer :absolute="!fixed" app>
       <span>&copy; {{ new Date().getFullYear() + "  Akira S." }}</span>
@@ -47,9 +78,11 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex"
 export default {
   name: "DefaultLayout",
   mounted() {
+    this.onMeChange()
     const dark = localStorage.getItem("dark")
     if (dark) {
       this.$vuetify.theme.dark = JSON.parse(dark)
@@ -64,16 +97,25 @@ export default {
         icon: "mdi-home",
         title: "หน้าแรก",
         to: "/",
+        isAuthenticated: true,
+      },
+      {
+        icon: "mdi-pencil-box",
+        title: "บันทึกความดี",
+        to: "/note",
+        isAuthenticated: true,
       },
       {
         icon: "",
         title: "ลงชื่อเข้าใช้งาน",
         to: "/signin",
+        isAuthenticated: false,
       },
       {
         icon: "",
         title: "ลงทะเบียนเข้าใช้งาน",
         to: "/signup",
+        isAuthenticated: false,
       },
     ],
     miniVariant: false,
@@ -82,9 +124,30 @@ export default {
     title: "😇 บันทึกแต้มบุญ",
   }),
   methods: {
+    ...mapActions("messages", ["setMessage"]),
+
     changeTheme() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark
       localStorage.setItem("dark", this.$vuetify.theme.dark)
+    },
+    onMeChange() {
+      this.$store.dispatch("getMe")
+    },
+    async onLogout() {
+      await this.$apolloHelpers.onLogout()
+      this.$router.push("/signin")
+    },
+  },
+  computed: {
+    ...mapGetters("messages", ["getMessage"]),
+    ...mapGetters({
+      isAuthenticated: "isAuthenticated",
+      me: "me",
+    }),
+  },
+  watch: {
+    $route(to, from) {
+      this.onMeChange()
     },
   },
 }

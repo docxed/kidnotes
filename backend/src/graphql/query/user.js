@@ -10,7 +10,7 @@ export const me = UserTC.schemaComposer.createResolver({
   resolve: async ({ context }) => {
     const user = await UserModel.findById(context.userId)
     if (!user) {
-      throw new Error("User not found")
+      throw new Error("ไม่พบผู้ใช้นี้ในระบบ")
     }
     return user
   },
