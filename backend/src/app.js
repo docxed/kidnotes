@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }))
 const corsOptions = {
   origin:
     process.env.NODE_ENV === "production"
-      ? ["https://studentbook-nuxt.herokuapp.com/", "http://localhost"]
+      ? ["https://startling-kheer-6029e2.netlify.app", "http://localhost"]
       : true,
   credentials: true,
 }
