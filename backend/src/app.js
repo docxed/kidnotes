@@ -68,3 +68,4 @@ const startApolloServer = async () => {
   })
 }
 startApolloServer()
+module.exports = app

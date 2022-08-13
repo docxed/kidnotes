@@ -7,14 +7,18 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "predeploy": "npm run generate",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@nuxtjs/apollo": "^4.0.1-rc.5",
     "@nuxtjs/axios": "^5.13.6",
     "core-js": "^3.19.3",
+    "gh-pages": "^4.0.0",
     "graphql-tag": "^2.12.6",
     "nuxt": "^2.15.8",
+    "push-dir": "^0.4.1",
     "vue": "^2.6.14",
     "vue-server-renderer": "^2.6.14",
     "vue-template-compiler": "^2.6.14",
@@ -25,5 +29,6 @@
     "@nuxtjs/google-fonts": "^3.0.0-0",
     "@nuxtjs/vuetify": "^1.12.3",
     "prettier": "2.7.1"
-  }
+  },
+  "homepage": "http://docxed.github.io/kidnotes"
 }
