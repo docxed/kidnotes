@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }))
 const corsOptions = {
   origin:
     process.env.NODE_ENV === "production"
-      ? ["https://startling-kheer-6029e2.netlify.app", "http://localhost"]
+      ? ["https://kidnotes.herokuapp.com", "http://localhost"]
       : true,
   credentials: true,
 }
