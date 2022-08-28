@@ -101,7 +101,7 @@ export default {
       },
       {
         icon: "mdi-pencil-box",
-        title: "บันทึกความดี",
+        title: "บันทึกความดี/ความชั่ว",
         to: "/note",
         isAuthenticated: true,
       },
