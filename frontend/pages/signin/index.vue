@@ -49,10 +49,10 @@ export default {
   methods: {
     ...mapActions("messages", ["setMessage"]),
 
-    onSubmitSignin(event) {
+    async onSubmitSignin(event) {
       this.signinLoading = true
       const { email, password } = event
-      this.$apollo
+      await this.$apollo
         .mutate({
           mutation: SIGNIN_MUTATION,
           variables: {

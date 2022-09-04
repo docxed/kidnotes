@@ -1,5 +1,10 @@
 <template>
   <v-app dark>
+    <v-overlay :value="overlay">
+      <v-card elevation="24" loading outlined light>
+        <v-card-text> กำลังเชื่อมต่อ... </v-card-text>
+      </v-card>
+    </v-overlay>
     <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app>
       <v-list>
         <div v-for="(item, i) in items" :key="i">
@@ -79,6 +84,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex"
+import axios from "axios"
 export default {
   name: "DefaultLayout",
   mounted() {
@@ -87,6 +93,7 @@ export default {
     if (dark) {
       this.$vuetify.theme.dark = JSON.parse(dark)
     }
+    this.helloServer()
   },
   data: () => ({
     clipped: false,
@@ -122,10 +129,33 @@ export default {
     right: true,
     rightDrawer: false,
     title: "😇 บันทึกแต้มบุญ",
+    overlay: false,
   }),
   methods: {
     ...mapActions("messages", ["setMessage"]),
 
+    helloServer() {
+      this.overlay = true
+      axios
+        .get(`${process.env.NUXT_ENV_BASEURL}/`)
+        .then((res) => {
+          this.overlay = false
+          this.setMessage({
+            title: "เชื่อมต่อเซิร์ฟเวอร์สำเร็จ",
+            type: "ดำเนินการ",
+            color: "green",
+          })
+        })
+        .catch((err) => {
+          console.log(err)
+          this.overlay = false
+          this.setMessage({
+            title: "เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ",
+            type: "ดำเนินการ",
+            color: "red",
+          })
+        })
+    },
     changeTheme() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark
       localStorage.setItem("dark", this.$vuetify.theme.dark)

@@ -45,19 +45,6 @@
         })
       }}
     </template>
-    <template v-slot:[`item.actions`]="{ item }">
-      <v-icon small class="mr-2" @click="$emit('updateItem', item)" v-if="permissionEdit(item)"
-        >mdi-pencil</v-icon
-      >
-
-      <v-icon
-        small
-        class="mr-2"
-        @click="$emit('deleteItem', { ...item, confirmType: 'delete' })"
-        v-if="me && me.email === 'akira.ajeyb@gmail.com'"
-        >mdi-delete</v-icon
-      >
-    </template>
   </v-data-table>
 </template>
 <script>
@@ -96,7 +83,6 @@ export default {
         { text: "สถานะ", value: "status" },
         { text: "วันที่บันทึก", value: "createdAt" },
         { text: "โดย", value: "user.name" },
-        { text: "จัดการ", value: "actions", sortable: false },
       ]
     },
   },

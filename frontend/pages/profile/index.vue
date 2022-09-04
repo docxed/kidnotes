@@ -48,9 +48,9 @@ export default {
   methods: {
     ...mapActions("messages", ["setMessage"]),
 
-    getProfileData() {
+    async getProfileData() {
       this.$loader(true)
-      this.$apollo
+      await this.$apollo
         .query({
           query: USER_QUERY,
           variables: {
@@ -68,11 +68,11 @@ export default {
           this.$loader(false)
         })
     },
-    onSubmitProfile(event) {
+    async onSubmitProfile(event) {
       this.profileFormLoading = true
       console.log(event)
       const { _id, name } = event
-      this.$apollo
+      await this.$apollo
         .mutate({
           mutation: UPDATE_ME_MUTATION,
           variables: {

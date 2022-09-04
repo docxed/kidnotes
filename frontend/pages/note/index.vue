@@ -75,6 +75,7 @@ import { NOTES_QUERY } from "~/graphql/query"
 import { mapGetters, mapActions } from "vuex"
 
 export default {
+  middleware: ["isAuth"],
   head() {
     return {
       title: "บันทึกความดี/ความชั่ว",
@@ -134,9 +135,9 @@ export default {
   methods: {
     ...mapActions("messages", ["setMessage"]),
 
-    notify(payloadData) {
+    async notify(payloadData) {
       const { message, stickerPackageId, stickerId } = payloadData
-      this.$apollo
+      await this.$apollo
         .mutate({
           mutation: NOTIFY_MUTATION,
           variables: {
@@ -161,9 +162,9 @@ export default {
           })
         })
     },
-    fetchNotes() {
+    async fetchNotes() {
       this.noteIsLoading = true
-      this.$apollo
+       await this.$apollo
         .query({
           query: NOTES_QUERY,
           fetchPolicy: "no-cache",
@@ -171,13 +172,16 @@ export default {
         .then(({ data }) => {
           this.allNoteData = []
           this.allNoteData = data.notes
+          this.noteIsLoading = false
+        }).catch((err) => {
+          this.noteIsLoading = false
         })
-      this.noteIsLoading = false
+      
     },
-    updateNote() {
+    async updateNote() {
       this.createNoteIsLoading = true
       const { _id, content, isImg, type, whoBad, point, status, user } = this.noteUpdate
-      this.$apollo
+      await this.$apollo
         .mutate({
           mutation: UPDATE_NOTE_MUTATION,
           variables: {
@@ -208,8 +212,8 @@ export default {
         })
         .catch((error) => {
           this.errNoteMessage = error.message.split(":")[1]
+          this.createNoteIsLoading = false
         })
-      this.createNoteIsLoading = false
     },
     resetUpdateNoteForm() {
       this.$refs.updateForm.resetValidation(true)
@@ -221,8 +225,8 @@ export default {
       this.noteUpdate = Object.assign({}, item)
       this.dialogUpdate = true
     },
-    deleteNote(id) {
-      this.$apollo
+    async deleteNote(id) {
+      await this.$apollo
         .mutate({
           mutation: DELETE_NOTE_MUTATION,
           variables: {
@@ -246,10 +250,10 @@ export default {
           })
         })
     },
-    createNote() {
+    async createNote() {
       this.createNoteIsLoading = true
       const { content, isImg, type, whoBad } = this.noteData
-      this.$apollo
+      await this.$apollo
         .mutate({
           mutation: CREATE_NOTE_MUTATION,
           variables: {
